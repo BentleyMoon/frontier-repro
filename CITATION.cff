@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this data or code, please cite it as below."
+title: "Detection is not resistance: frontier prompt-injection receipts"
+authors:
+  - family-names: Moon
+    given-names: Bentley
+type: dataset
+license: MIT
+keywords:
+  - AI safety
+  - prompt injection
+  - LLM evaluation
+  - oversight
+abstract: >
+  Preregistered Batch-API tests of prompt-injection resistance across three frontier
+  models (Claude Opus 4.8, Sonnet 5, Haiku 4.5). Sonnet 5 detects 100% of a blatant
+  injection while obeying 80% of it: detection is not resistance. A follow-up isolates
+  the mechanism as channel/authority deference and shows a block-labeling defense that
+  drives compliance to zero. Raw completions + a stdlib re-derivation script included.
