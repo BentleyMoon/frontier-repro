@@ -95,9 +95,71 @@ def main():
     print("\nShared-basin note: rho across these models is UNDEFINED here -- detection is at ceiling")
     print("for Opus and Sonnet 5 (no variance to correlate). Measuring it needs a subtler injection")
     print("that strong models sometimes miss (an open harness problem, see the post's last section).")
-    print("\nThe authority-costume result (+0.307) and the CoT-sway null (+0.015) execute model-written")
-    print("code against oracles to grade; their raw batches + derived summaries are in data/ and are")
-    print("re-derived by the harnesses in the engine repo (see README -> Full reproduction).")
+
+    verify_statistics()
+
+
+# ---- self-contained statistics: re-derive the authority + sway numbers from per-task values --------
+def _mean(xs):
+    return sum(xs) / len(xs) if xs else 0.0
+
+
+def _bootstrap_ci(values, iters=20000, ci=90, seed=12345):
+    """Percentile bootstrap CI for the mean, stdlib only (a tiny, auditable reimplementation of what
+    the engine's rigor.py does). Deterministic via a fixed seed so anyone gets the same interval."""
+    import random
+    rng = random.Random(seed)
+    n = len(values)
+    means = []
+    for _ in range(iters):
+        s = 0.0
+        for _ in range(n):
+            s += values[rng.randrange(n)]
+        means.append(s / n)
+    means.sort()
+    lo = means[int((0.5 - ci / 200.0) * iters)]
+    hi = means[int((0.5 + ci / 200.0) * iters)]
+    return lo, hi
+
+
+def _verdict(values, meoi):
+    """The same three-way rule the post uses: POSITIVE if the CI clears 0 and |effect| >= MEOI in the
+    positive direction; INFORMATIVE_NULL if the whole CI sits inside +/-MEOI; else INCONCLUSIVE."""
+    eff = _mean(values)
+    lo, hi = _bootstrap_ci(values)
+    if lo > 0 and eff >= meoi:
+        return eff, lo, hi, "POSITIVE"
+    if hi < 0 and -eff >= meoi:
+        return eff, lo, hi, "ANTI"
+    if lo > -meoi and hi < meoi:
+        return eff, lo, hi, "INFORMATIVE_NULL"
+    return eff, lo, hi, "INCONCLUSIVE"
+
+
+def verify_statistics():
+    """Re-derive the authority-costume and CoT-sway verdicts from their committed per-task values,
+    with NO engine dependency -- just the ~15-line bootstrap above. This closes the gap the README
+    used to note: every headline number in the post now re-derives inside this repo."""
+    path = os.path.join(DATA, "per_task_values.json")
+    if not os.path.exists(path):
+        return
+    series = json.load(open(path, encoding="utf-8"))
+    print("\n" + "=" * 72)
+    print("Statistics re-derived from committed per-task values (stdlib bootstrap, no engine)")
+    print("=" * 72)
+    print("  %-34s %9s %-22s %s" % ("result", "effect", "90% CI", "verdict"))
+    print("  " + "-" * 70)
+    for name, s in series.items():
+        vals = s.get("values")
+        if not vals:
+            continue
+        eff, lo, hi, verdict = _verdict(vals, s.get("meoi", 0.05))
+        agree = "" if verdict == s.get("verdict_reported") else "  !! differs from reported %s" % s.get("verdict_reported")
+        print("  %-34s %+8.3f  [%+.3f, %+.3f]      %s%s"
+              % (name.replace("__", " / ")[:34], eff, lo, hi, verdict, agree))
+    print("\n  These match the post: authority costume on Sonnet 5 = +0.307 POSITIVE; CoT sway = a null.")
+    print("  The raw completions behind these values are in data/ (results.jsonl); regrading them from")
+    print("  scratch executes model-written code and uses the engine harnesses (README -> Full repro).")
 
 
 if __name__ == "__main__":

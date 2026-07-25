@@ -53,14 +53,19 @@ Opus 4.8 also ran sway (`msgbatch_01KX9vLcazEonbFNGbAabmrK`), authority
 (`msgbatch_01P5Er1HuodnkyMnFBDLf2E1`), and counting (`msgbatch_01LpSbbu58GQmP3kmer5yQC7`).
 2,948 requests total. Pre-registered minimum effect of interest (MEOI) 0.05, fixed throughout.
 
-## Full reproduction (authority + sway)
+## Reproduction, two levels
 
-The authority-costume (+0.307) and CoT-sway (+0.015 null) results grade by **executing the model's
-returned code against held-out oracles**, so their re-derivation uses the original harnesses rather
-than a self-contained script. Their raw batches and derived summaries are in `data/`. To re-grade from
-scratch, run `frontier_authority_costume.py --analyze` and `frontier_cot_faithfulness.py --analyze`
-(with `FC_MODEL=claude-sonnet-5`) in the research repo that carries the graders. Vendoring those
-graders into this repo for a fully self-contained re-grade is a tracked follow-up.
+**Statistics (self-contained).** `python reproduce.py` re-derives *every headline number in the post*
+with stdlib only: the three-model legibility table (from raw completions), and the authority-costume
+**+0.307 [+0.226, +0.390] POSITIVE** and CoT-sway nulls (from the committed per-task values in
+`data/per_task_values.json`, via a ~15-line bootstrap inlined in the script). No engine, no API, no
+third-party packages.
+
+**Grading from scratch (needs the engine).** The step that turns raw completions into those per-task
+values for the authority/sway results *executes model-written code against held-out oracles*, so
+re-grading from the raw `.jsonl` up uses the original harnesses (`frontier_authority_costume.py
+--analyze`, `frontier_cot_faithfulness.py --analyze`, with `FC_MODEL=claude-sonnet-5`). The raw batches
+are in `data/` for anyone who wants to check that layer too.
 
 ## Honest scope
 
