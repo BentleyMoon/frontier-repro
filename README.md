@@ -4,9 +4,11 @@ Reproducible data and code behind the post *"Detection is not resistance: three 
 failure profiles, and one defense that works."* Everything here re-derives from raw model completions —
 no API key, no network, no third-party packages.
 
-By **Bentley Moon**, independent AI-safety researcher. [bentleymoon.com](https://bentleymoon.com) ·
-[research](https://bentleymoon.com/research). Published from the GitHub handle `Vingadden`; the author,
-the citation metadata, and the site above are the same person.
+By **Bentley Moon**, independent AI-safety researcher.
+[bentleymoon.com](https://bentleymoon.com) ·
+[ORCID 0009-0003-0053-1661](https://orcid.org/0009-0003-0053-1661).
+Published from the GitHub handle `Vingadden`; the ORCID above is the durable identifier if the handle
+ever changes.
 
 ## The result in one table
 
@@ -90,8 +92,8 @@ are in `data/` for anyone who wants to check that layer too.
 Machine-readable metadata is in [`CITATION.cff`](CITATION.cff). Cite the **concept DOI** rather than a
 version DOI, so the citation stays valid across releases.
 
-    Moon, Bentley. "Detection is not resistance: frontier prompt-injection receipts."
-    https://bentleymoon.com · https://github.com/Vingadden/frontier-repro
+    Moon, Bentley (ORCID 0009-0003-0053-1661). "Detection is not resistance:
+    frontier prompt-injection receipts." https://github.com/Vingadden/frontier-repro
 
 ## Contact and corrections
 
