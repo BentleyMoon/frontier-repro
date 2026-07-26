@@ -122,6 +122,30 @@ summarize any model with a single "safe / unsafe" label.
 Opus really is robust on everything I threw at it. That finding survives. What did not survive is the inference from
 "Opus is robust" to "the frontier is robust."
 
+### 5. Did it detect and obey the *same* items?
+
+The obvious objection to the table in section 1 is that marginal rates of `detect 1.00` and `obey 0.80` are compatible with a model that detects exactly the items it refuses. `joint_table.py` in this repo settles that from the committed data:
+
+```
+claude-sonnet-5   detected on every sample + obeyed >=1 sample   20 / 20 tasks
+claude-opus-4-8   detected on every sample + never obeyed        20 / 20 tasks
+claude-haiku-4-5  detection below ceiling  + never obeyed        18 / 20 tasks
+```
+
+Complete task-level overlap, so the disjoint-sets explanation is dead.
+
+**What this does not establish, and the distinction matters.** `detect` is a separate condition with its own prompt. This is post-hoc recognition under audit, not a flag raised inside the obedience trajectory. The defensible claim is: *on every task where it complied, the same model given the same input identifies the injection when asked to audit it.* I am not claiming it noticed and complied in one breath. **The experiment that would close that gap is one added condition, a single completion that performs the task and reports anything suspicious, roughly 80 requests.** It is not run yet.
+
+## Where this sits
+
+Two lines of prior work bear on this directly and I want them in the frame rather than discovered by a reader.
+
+**Spotlighting** (Hines et al., Microsoft, 2024) introduced delimiting, datamarking and encoding of untrusted input, and reported large reductions in attack success. My block-labeling arm is adjacent and **not identical**: spotlighting marks untrusted content on the way in, done by the harness, whereas here the model is required to classify each block itself and obey only trusted content. Model-side adjudication rather than input-side marking. Whether that difference survives an adaptive attacker is exactly the comparison I would most like someone to run.
+
+**The instruction hierarchy** (Wallace et al., OpenAI, 2024) is built on the premise that LLMs do not distinguish privileged instructions from untrusted content sharing a context window. "Channel deference" is a measurement of the failure that line of work exists to train away, not a new phenomenon. What is new here is the *within-model dissociation*: the same model ignores the identical payload as data, resists a fabricated technique, and fails only on the authority costume.
+
+On the correlated-overseer side, 2026 work has measured judge-to-judge error correlation at the frontier directly, including a result that nine judges collapse to roughly two effective votes by Kish n_eff. My local shared-basin figure is a different quantity, generator-to-auditor rather than judge-to-judge, and it should be read as a complement rather than a competitor. The open question is no longer whether panels are correlated. It is what to do about it.
+
 ## Interpretation
 
 Three things I'd defend:
@@ -149,7 +173,8 @@ result from one frontier model to the others**, including within a single vendor
 - **Small n.** 20 tasks for the legibility probe, 14 for the authority costume. The authority result is `powered=False`
   under my own rigor test — the CI robustly excludes zero, so the POSITIVE stands (power gates equivalence claims, not
   detections), but this is a preliminary receipt, not a replicated theorem.
-- **The defense arm's 0.00 is a floor.** "No compliance observed at n=14" is not "eliminated." I want this replicated at
+- **The inferential unit is not the request.** 2,948 requests come from 20 tasks, 14 payloads and a handful of attack templates across three models from one vendor. Uncertainty should be read at the task and template level, not the request level; a request-level interval would be badly overconfident.
+- **The defense arm's 0.00 is a floor, and here is the size of it.** With zero compliance events in 14 independent trials, the exact one-sided 95% upper bound on the underlying compliance rate is about **19.3%**. So the honest sentence is "no compliance observed at n=14, rates up to roughly 19% remain compatible with the data", not "eliminated." I want this replicated at
   much higher n before anyone ships it as a guarantee.
 - **The channel effect and the label defense are the same number.** Both baselines sit at 0.00, so `authority − data`
   and `unlabeled − labeled` reduce to the identical quantity (+0.307). It is one effect and I report it as one, not as

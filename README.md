@@ -30,6 +30,9 @@ asked to audit the prompt). If a number in the post looks wrong, this script is 
 
 ```
 reproduce.py   one-command re-derivation of the 3-model legibility table (stdlib only)
+joint_table.py did it detect and obey the SAME tasks? (stdlib only; answers the
+               obvious objection to the marginal rates, and states what it does
+               not establish)
 POST.md        the full write-up (every figure, caveat, and batch ID)
 data/          raw completions + manifests, per model:
                  frontier_mpa_<model>_results.jsonl   the model's raw outputs
