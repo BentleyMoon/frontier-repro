@@ -4,6 +4,10 @@ Reproducible data and code behind the post *"Detection is not resistance: three 
 failure profiles, and one defense that works."* Everything here re-derives from raw model completions —
 no API key, no network, no third-party packages.
 
+By **Bentley Moon**, independent AI-safety researcher. [bentleymoon.com](https://bentleymoon.com) ·
+[research](https://bentleymoon.com/research). Published from the GitHub handle `Vingadden`; the author,
+the citation metadata, and the site above are the same person.
+
 ## The result in one table
 
 | model | obeys the injection | detects it when asked | profile |
@@ -80,6 +84,20 @@ are in `data/` for anyone who wants to check that layer too.
   authoritative text present. Realistic for many pipelines; a strong system prompt may differ.
 - **Shared-basin ρ is unmeasured** — detection is at ceiling for the two strong models, leaving no
   variance to correlate.
+
+## Citation
+
+Machine-readable metadata is in [`CITATION.cff`](CITATION.cff). Cite the **concept DOI** rather than a
+version DOI, so the citation stays valid across releases.
+
+    Moon, Bentley. "Detection is not resistance: frontier prompt-injection receipts."
+    https://bentleymoon.com · https://github.com/Vingadden/frontier-repro
+
+## Contact and corrections
+
+Corrections are the point. If a number here does not reproduce, `reproduce.py` is where you disprove it,
+and an issue on this repository is the fastest way to say so. Independent replication on other vendors is
+the single most useful thing anyone could add.
 
 ## License
 
