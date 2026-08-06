@@ -8,8 +8,9 @@ authors:
     website: "https://bentleymoon.com"
 type: dataset
 license: MIT
-version: 0.1.0
-repository-code: "https://github.com/Vingadden/frontier-repro"
+version: 1.0.0
+date-released: "2026-08-06"
+repository-code: "https://github.com/bentleymoon/frontier-repro"
 url: "https://bentleymoon.com"
 keywords:
   - AI safety
@@ -26,5 +27,9 @@ abstract: >
   rather than inside the obedience trajectory. A follow-up isolates the mechanism as
   channel/authority deference rather than general manipulability, and shows a
   block-labeling defense that drives observed compliance to zero at n=14 (one-sided
-  95% upper bound approximately 19%). Raw completions ship with stdlib-only
+  95% upper bound approximately 19%). That defense has since replicated on an
+  open-weight 31B model at n=200 with obedience falling from 0.99 to 0.00, including
+  against an attacker told the defense was in place; the same labeling applied to a
+  reviewing model rather than the acting model degraded its discrimination instead,
+  so the result is scoped to the actor channel. Raw completions ship with stdlib-only
   re-derivation scripts requiring no API key and no network.
