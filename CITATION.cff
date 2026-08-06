@@ -10,7 +10,7 @@ type: dataset
 license: MIT
 version: 1.0.0
 date-released: "2026-08-06"
-repository-code: "https://github.com/bentleymoon/frontier-repro"
+repository-code: "https://github.com/BentleyMoon/frontier-repro"
 url: "https://bentleymoon.com"
 keywords:
   - AI safety

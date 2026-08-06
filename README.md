@@ -6,7 +6,7 @@ from raw model completions, with no API key, no network and no third-party packa
 By **Bentley Moon**, independent AI-safety researcher.
 [bentleymoon.com](https://bentleymoon.com) ·
 [ORCID 0009-0003-0053-1661](https://orcid.org/0009-0003-0053-1661).
-Published from the GitHub handle `bentleymoon`, formerly `Vingadden`. The ORCID above is the durable
+Published from the GitHub handle `BentleyMoon`, formerly `Vingadden`. The ORCID above is the durable
 identifier, which is why it is here. GitHub redirects an old handle, but a redirect is not a citation.
 
 ## The result in one table
@@ -107,7 +107,7 @@ Machine-readable metadata is in [`CITATION.cff`](CITATION.cff). Cite the **conce
 version DOI, so the citation stays valid across releases.
 
     Moon, Bentley (ORCID 0009-0003-0053-1661). "Detection is not resistance:
-    frontier prompt-injection receipts." https://github.com/bentleymoon/frontier-repro
+    frontier prompt-injection receipts." https://github.com/BentleyMoon/frontier-repro
 
 ## Contact and corrections
 
