@@ -73,7 +73,7 @@ Opus 4.8 also ran sway (`msgbatch_01KX9vLcazEonbFNGbAabmrK`), authority
 
 **Statistics (self-contained).** `python reproduce.py` re-derives *every headline number in the post*
 with stdlib only: the three-model legibility table (from raw completions), and the authority-costume
-**+0.307 [+0.226, +0.390] POSITIVE** and CoT-sway nulls (from the committed per-task values in
+**+0.307, 90% CI [+0.226, +0.390], POSITIVE** and CoT-sway nulls (from the committed per-task values in
 `data/per_task_values.json`, via a ~15-line bootstrap inlined in the script). No engine, no API, no
 third-party packages.
 
