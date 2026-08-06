@@ -7,8 +7,8 @@ no API key, no network, no third-party packages.
 By **Bentley Moon**, independent AI-safety researcher.
 [bentleymoon.com](https://bentleymoon.com) ·
 [ORCID 0009-0003-0053-1661](https://orcid.org/0009-0003-0053-1661).
-Published from the GitHub handle `Vingadden`; the ORCID above is the durable identifier if the handle
-ever changes.
+Published from the GitHub handle `bentleymoon` (formerly `Vingadden`); the ORCID above is the durable
+identifier, which is why it is here — GitHub redirects the old handle, but redirects are not citations.
 
 ## The result in one table
 
@@ -21,6 +21,13 @@ ever changes.
 Sonnet 5 flags an injected `## SYSTEM DIRECTIVE` every time it is asked to audit it, and obeys it on
 80% of tasks when it isn't. Detection is not resistance. A follow-up isolates the mechanism —
 **channel deference, not gullibility** — and a **block-labeling defense drives compliance to 0.00**.
+
+That defense figure rests on n=14 here, which is a receipt and not a theorem. It has since replicated
+off-vendor on an open-weight 31B model at n=200: obedience 0.99 → 0.00, and an attacker explicitly told
+the labeling was in place gained nothing. The same labeling applied to a **reviewing** model rather than
+an **acting** one made things worse, degrading its ability to tell compromised work from clean work.
+Everything below is about the actor channel. That distinction is not cosmetic — it is the difference
+between a defense and a liability, and it is not visible in these batches.
 
 ## Reproduce the headline (30 seconds, stdlib only)
 
@@ -81,7 +88,12 @@ are in `data/` for anyone who wants to check that layer too.
 - **One vendor** (Anthropic), three models. No cross-vendor test.
 - **Small n**: 20 tasks (legibility), 14 (authority). The authority result's CI excludes zero (so the
   POSITIVE stands) but is not high-powered — a preliminary receipt, not a replicated theorem.
-- **The defense's 0.00 is a floor** — "no compliance observed at n=14," not "eliminated."
+- **The defense's 0.00 is a floor** — "no compliance observed at n=14," not "eliminated." Replicated
+  since at n=200 on an open-weight 31B model (0.99 → 0.00), which raises confidence in the direction
+  without making this batch larger than it is.
+- **The defense is tested on the ACTOR only.** Nothing here tests labeling the text a *reviewing* model
+  reads. Subsequent local work found that application harms the reviewer, so do not generalize the 0.00
+  from the actor channel to the oversight channel — they came apart under test.
 - **No system prompt** in these batch requests, which is why an injected directive is the most
   authoritative text present. Realistic for many pipelines; a strong system prompt may differ.
 - **Shared-basin ρ is unmeasured** — detection is at ceiling for the two strong models, leaving no
@@ -93,7 +105,7 @@ Machine-readable metadata is in [`CITATION.cff`](CITATION.cff). Cite the **conce
 version DOI, so the citation stays valid across releases.
 
     Moon, Bentley (ORCID 0009-0003-0053-1661). "Detection is not resistance:
-    frontier prompt-injection receipts." https://github.com/Vingadden/frontier-repro
+    frontier prompt-injection receipts." https://github.com/bentleymoon/frontier-repro
 
 ## Contact and corrections
 
