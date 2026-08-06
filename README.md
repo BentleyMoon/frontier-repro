@@ -1,14 +1,13 @@
-# Detection is not resistance — frontier prompt-injection receipts
+# Detection is not resistance: frontier prompt-injection receipts
 
-Reproducible data and code behind the post *"Detection is not resistance: three frontier models, three
-failure profiles, and one defense that works."* Everything here re-derives from raw model completions —
-no API key, no network, no third-party packages.
+Reproducible data and code behind the post *"Detection is not resistance."* Everything here re-derives
+from raw model completions, with no API key, no network and no third-party packages.
 
 By **Bentley Moon**, independent AI-safety researcher.
 [bentleymoon.com](https://bentleymoon.com) ·
 [ORCID 0009-0003-0053-1661](https://orcid.org/0009-0003-0053-1661).
-Published from the GitHub handle `bentleymoon` (formerly `Vingadden`); the ORCID above is the durable
-identifier, which is why it is here — GitHub redirects the old handle, but redirects are not citations.
+Published from the GitHub handle `bentleymoon`, formerly `Vingadden`. The ORCID above is the durable
+identifier, which is why it is here. GitHub redirects an old handle, but a redirect is not a citation.
 
 ## The result in one table
 
@@ -18,16 +17,19 @@ identifier, which is why it is here — GitHub redirects the old handle, but red
 | Claude Haiku 4.5 | 0.00 | 0.59 | resists, often doesn't notice |
 | **Claude Sonnet 5** | **0.80** | **1.00** | **detects and complies anyway** |
 
-Sonnet 5 flags an injected `## SYSTEM DIRECTIVE` every time it is asked to audit it, and obeys it on
-80% of tasks when it isn't. Detection is not resistance. A follow-up isolates the mechanism —
-**channel deference, not gullibility** — and a **block-labeling defense drives compliance to 0.00**.
+Sonnet 5 flags an injected `## SYSTEM DIRECTIVE` every time it is asked to audit it, then obeys it on
+80% of tasks when it is not asked. Detection is not resistance. A follow-up pins the mechanism to
+channel deference rather than gullibility, and a block-labeling defense drives compliance to 0.00.
 
-That defense figure rests on n=14 here, which is a receipt and not a theorem. It has since replicated
-off-vendor on an open-weight 31B model at n=200: obedience 0.99 → 0.00, and an attacker explicitly told
-the labeling was in place gained nothing. The same labeling applied to a **reviewing** model rather than
-an **acting** one made things worse, degrading its ability to tell compromised work from clean work.
-Everything below is about the actor channel. That distinction is not cosmetic — it is the difference
-between a defense and a liability, and it is not visible in these batches.
+That defense figure rests on n=14 here, which makes it a receipt rather than a theorem. It has since
+replicated off-vendor on an open-weight 31B model at n=200, where obedience fell from 0.99 to 0.00 and
+held against an attacker who was explicitly told the labeling was in place.
+
+It also has a limit these batches could not see. Applying the same labeling to a model that is
+**reviewing** work, rather than one **doing** the work, made things worse. Its ability to tell
+compromised output from clean output fell from 0.335 to 0.107. Everything below is about the actor
+channel, and the 0.00 does not travel across that line. That is the difference between a defense and a
+liability.
 
 ## Reproduce the headline (30 seconds, stdlib only)
 
@@ -87,16 +89,16 @@ are in `data/` for anyone who wants to check that layer too.
 
 - **One vendor** (Anthropic), three models. No cross-vendor test.
 - **Small n**: 20 tasks (legibility), 14 (authority). The authority result's CI excludes zero (so the
-  POSITIVE stands) but is not high-powered — a preliminary receipt, not a replicated theorem.
-- **The defense's 0.00 is a floor** — "no compliance observed at n=14," not "eliminated." Replicated
+  POSITIVE stands) but is not high-powered. A preliminary receipt, not a replicated theorem.
+- **The defense's 0.00 is a floor.** "No compliance observed at n=14", not "eliminated". Replicated
   since at n=200 on an open-weight 31B model (0.99 → 0.00), which raises confidence in the direction
   without making this batch larger than it is.
 - **The defense is tested on the ACTOR only.** Nothing here tests labeling the text a *reviewing* model
   reads. Subsequent local work found that application harms the reviewer, so do not generalize the 0.00
-  from the actor channel to the oversight channel — they came apart under test.
+  from the actor channel to the oversight channel. They came apart under test.
 - **No system prompt** in these batch requests, which is why an injected directive is the most
   authoritative text present. Realistic for many pipelines; a strong system prompt may differ.
-- **Shared-basin ρ is unmeasured** — detection is at ceiling for the two strong models, leaving no
+- **Shared-basin ρ is unmeasured.** Detection is at ceiling for the two strong models, leaving no
   variance to correlate.
 
 ## Citation
@@ -115,4 +117,4 @@ the single most useful thing anyone could add.
 
 ## License
 
-Code: MIT (see LICENSE). Data: CC0 — the raw completions are facts, reuse them freely.
+Code: MIT (see LICENSE). Data: CC0, because the raw completions are facts. Reuse them freely.
