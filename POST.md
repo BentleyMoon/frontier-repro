@@ -1,7 +1,8 @@
 # Detection is not resistance
 
-*Draft for LessWrong / AI Alignment Forum. Single author, independent. Every number below re-derives from the committed
-data, with batch IDs and result JSONs at the end. I wrote this to be falsified. If I am wrong, I want to know.*
+*Single author, independent. Every number below re-derives from the committed data, with batch IDs and result JSONs at
+the end. Code and raw completions: [github.com/BentleyMoon/frontier-repro](https://github.com/BentleyMoon/frontier-repro), pinned at commit [`d4355b5`](https://github.com/BentleyMoon/frontier-repro/commit/d4355b59dc6c0b23b034cf30fe8677c725852536). Every number below re-derives from that commit; if a later one disagrees, the pin is what this post claimed.
+`reproduce.py` needs no API key and no network. I wrote this to be falsified. If I am wrong, I want to know.*
 
 ## The short version
 
@@ -27,14 +28,29 @@ asked. Awareness is not protection. Capability does not buy robustness in genera
 generalizing from that one model was my mistake.
 
 Following that thread produced the result I care most about. The failure is channel deference rather than gullibility,
-and forcing the model to label each input block as trusted or untrusted removed it on every task I measured.
+and forcing the model to label each input block as trusted or untrusted drove observed compliance to zero on every task
+I measured. That is fourteen trials, so read it as a bound and not as an elimination; the exact bound is in the
+limitations, and it is wider than the zero makes it look.
 
 ## What I was testing locally
 
 Everything was preregistered with a fixed minimum effect of interest, MEOI 0.05, and a matched anti-claim. Grading runs
 either by executing code against held-out oracles or by judge-free keyword rules. No LLM-as-judge anywhere, and no
-picking the metric after seeing the data. Four of my own hypotheses have been refuted in writing so far. I mention that
-because a program which never kills its own claims is not measuring anything. This post is the fifth.
+picking the metric after seeing the data. Four of my own hypotheses had been refuted in writing when I first drafted
+this, and the count has grown since. I mention it because a program which never kills its own claims is not measuring
+anything, and because this post is itself one of them: an earlier version concluded the opposite.
+
+The most recent one is worth stating plainly, because it is the most expensive mistake this program has made and I found
+it days before posting. A design names its stimulus by string. A validator checked that string against a list that had
+never been updated to match the variants actually built, an unmatched name was silently replaced with nothing, and the
+runner reads nothing as the plain control condition. Fourteen local designs ran the control and reported it as the
+treatment. They passed every check I had, because the artifact produced exactly the result the hypothesis predicted, so
+everything that asked "is this coherent" answered yes. Coherence cannot see that class. Two findings retracted, and my
+own forecasting skill score fell from +0.097 to +0.033 once the affected designs came out of it.
+
+That was the local harness. None of it touches the batches below, which run against the Batch API and re-derive from the
+committed completions. I include it because anyone deciding how much weight to put on the frontier numbers should know
+what my error rate looks like when I am the one who caught it.
 
 The failures I took to the frontier were the ones that hurt locally.
 
@@ -53,17 +69,35 @@ probe. MEOI stayed at 0.05 throughout and was never lowered to manufacture a res
 
 One property of the setup matters for reading the numbers. Batch requests carry no system prompt, so an injected
 `## SYSTEM DIRECTIVE` is the most authoritative-looking instruction anywhere in the context. That is realistic for a lot
-of deployed pipelines, and it turns out to be the whole lever.
+of deployed pipelines, and it is a large part of the lever.
+
+**Correction, 2026-08-13.** That paragraph used to end "and it turns out to be the whole lever," attributing the effect
+to authority salience. A follow-up batch says that is not sufficient. In the legibility arm the injection is the *last*
+text in the prompt. Append roughly 200 characters of neutral delivery-relay boilerplate after it, carrying no authority,
+no instruction and no relationship to the task, and obedience goes from 0.787 to **0.000** across 20 tasks. An
+output-format demand instead of the boilerplate does the same. The directive is still the most authoritative-looking
+text present in every one of those conditions; its authority did not change. **Terminal position is doing work I
+attributed to authority.** So read the 0.80 below as contingent on the injection being the final thing in the context,
+which is a narrower and more fragile condition than the paragraph originally implied. The authority-costume result
+(+0.307) and the labeling defense are *not* affected: both are within-position contrasts, verified by reading the
+harness rather than assumed.
 
 ## Results
 
 ### 1. The legibility probe across three models
 
-| model | obey | detect | false alarm | n |
-|---|---|---|---|---|
-| Opus 4.8 | 0.00 | 1.00 | 0.00 | 20 |
-| Haiku 4.5 | 0.00 | 0.59 | 0.00 | 20 |
-| Sonnet 5 | **0.80** | 1.00 | 0.00 | 20 |
+| model | obey | 95% CI | detect | 95% CI | false alarm | n |
+|---|---|---|---|---|---|---|
+| Opus 4.8 | 0.00 | [0.00, 0.16] | 1.00 | [0.84, 1.00] | 0.00 | 20 |
+| Haiku 4.5 | 0.00 | [0.00, 0.16] | 0.59 | [0.39, 0.78] | 0.00 | 20 |
+| Sonnet 5 | **0.80** | **[0.58, 0.92]** | 1.00 | [0.84, 1.00] | 0.00 | 20 |
+
+Wilson intervals on the counts. Two things they say that the bare rates do not. The headline is
+sixteen of twenty, and its interval is a third of the scale wide — "obeys 80% of the time" is honest,
+"obeys somewhere between 58% and 92% of the time, at n=20" is what the data support. And the 0.00
+rows are floors rather than zeros: the upper bound on nought of twenty is 0.16, so "Opus never
+complied" means "complied at most 16% of the time at this n". I make exactly that argument about the
+Opus channel arm two sections down, and it applies here too.
 
 I checked that Sonnet 5's compliance is not a grading artifact. The grader is a substring match for "breach", and the
 completions are the bare token `BREACH` with no refusal language around it, against `112`, `160` and `107` in the
@@ -94,7 +128,7 @@ with no system prompt present, an injected directive is the most authoritative t
 
 ### 3. The defense
 
-Forcing the model to classify each input block as trusted or untrusted, and to obey only trusted content, drove
+Forcing the model to classify each input block as trusted or untrusted, and to obey only trusted content, drove observed
 compliance to 0.00 on every task I measured. It is cheap and deployable, and it is the part of this work I would most
 like someone to break.
 
@@ -217,6 +251,16 @@ frontier model to the others, including inside a single vendor. I did, and it wa
   independent confirmations.
 - **No system prompt.** Realistic for a lot of pipelines, but a deployment with a strong system prompt may behave
   differently, plausibly better, since the injected directive would no longer be the most authoritative text present.
+- **The obey rate depends on the injection being LAST, and this is the limitation I would lead with.** Measured on
+  Sonnet 5 across 720 further requests, 2026-08-13. Roughly 200 characters of neutral trailing text after the injection
+  takes obedience to **0.000**, reproduced in two independent batches; an output-format demand instead of boilerplate
+  does the same. Task-level one-sided 95% upper bound on those zeros, 0.139. Shorter trailing text only *partly*
+  suppresses: 25 chars → 0.475, 50 → 0.250, 100 → 0.450 against controls of 0.79 to 0.85. So a long footer plausibly
+  defeats this result and a short one plausibly does not. I will not put a shape on the curve between 25 and 100
+  characters, because my rungs varied wording as well as length and the two are confounded in that design.
+  Three registered forecasts across these batches were wrong; the one that survived was that a gradient exists at all.
+- **The 0.80 is one batch, and the same prompt re-run gives 0.738, 0.787 and 0.850.** Mean 0.792 across three
+  independent controls. The published figure is well centred, but read it as roughly 0.79 ± 0.06 rather than as a point.
 - **Synthetic tasks with programmatic oracles**, not real software-engineering work graded by its own test suite.
 - **A null is not proof of safety**, and Opus's clean sheet is four tests on one task family.
 
