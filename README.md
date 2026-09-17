@@ -1,5 +1,7 @@
 # Detection is not resistance: frontier prompt-injection receipts
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22805797.svg)](https://doi.org/10.5281/zenodo.22805797)
+
 Reproducible data and code behind the post *"Detection is not resistance."* Everything here re-derives
 from raw model completions, with no API key, no network and no third-party packages.
 
@@ -117,12 +119,13 @@ are in `data/` for anyone who wants to check that layer too.
 
 ## Citation
 
-Machine-readable metadata is in [`CITATION.cff`](CITATION.cff). Cite the **concept DOI** rather than a
-version DOI, so the citation stays valid across releases.
+Machine-readable metadata is in [`CITATION.cff`](CITATION.cff). Cite the **concept DOI**,
+[10.5281/zenodo.22805797](https://doi.org/10.5281/zenodo.22805797), rather than a version DOI, so the citation stays valid
+across releases.
 
     Moon, Bentley (ORCID 0009-0003-0053-1661). "Detection is not resistance:
     frontier prompt-injection receipts." https://github.com/BentleyMoon/frontier-repro
-    Release v1.0.0.
+    Release v1.0.1. doi:10.5281/zenodo.22805797
 
 ## Contact and corrections
 
