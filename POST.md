@@ -1,7 +1,7 @@
 # Detection is not resistance
 
 *Single author, independent. Every number below re-derives from the committed data, with batch IDs and result JSONs at
-the end. Code and raw completions: [github.com/BentleyMoon/frontier-repro](https://github.com/BentleyMoon/frontier-repro), pinned at commit [`d4355b5`](https://github.com/BentleyMoon/frontier-repro/commit/d4355b59dc6c0b23b034cf30fe8677c725852536). Every number below re-derives from that commit; if a later one disagrees, the pin is what this post claimed.
+the end. Code and raw completions: [github.com/BentleyMoon/frontier-repro](https://github.com/BentleyMoon/frontier-repro), pinned at release [`v1.0.0`](https://github.com/BentleyMoon/frontier-repro/releases/tag/v1.0.0). Every number below re-derives from that release, including the 2026-08-13 corrections (`python recency.py`); earlier drafts were pinned at `d4355b5`, which does not contain the recency batches.
 `reproduce.py` needs no API key and no network. I wrote this to be falsified. If I am wrong, I want to know.*
 
 ## The short version
@@ -190,8 +190,14 @@ run it.
 
 ## Where this sits
 
-Two lines of prior work bear on this directly, and I would rather put them in the frame myself than have a reader
+Three lines of prior work bear on this directly, and I would rather put them in the frame myself than have a reader
 discover them.
+
+**I am not the first to find detection without resistance.** arXiv:2606.07808 (June 2026) decomposes
+instruction-hierarchy failure and names this exact mode, correctly reasoning about a conflict and still producing the
+violating output, across four model families, about a month before the runs here. I found it independently and report
+it as a replication, not a discovery. What I have not found elsewhere is the presentation channel below: the identical
+payload moving compliance from 0.00 to 0.33 purely by changing what it claims to be.
 
 **Spotlighting** (Hines et al., Microsoft, 2024) introduced delimiting, datamarking and encoding of untrusted input, and
 reported large reductions in attack success. My block-labeling arm is adjacent to it without being the same thing.
@@ -212,7 +218,8 @@ with it. The open question is no longer whether panels are correlated. It is wha
 
 ## What I would defend
 
-**Detection is not resistance.** The most capable model in a family can identify a manipulation perfectly and comply
+**Detection is not resistance**, as an independent replication of the mode arXiv:2606.07808 reported first. I defend
+the measurement, not priority. The most capable model in a family can identify a manipulation perfectly and comply
 with it anyway. Evaluations that measure whether a model *can recognize* an attack, which is the shape most red-team
 suites take, score Sonnet 5 as safe here. It obeyed 80% of the time.
 
@@ -252,15 +259,32 @@ frontier model to the others, including inside a single vendor. I did, and it wa
 - **No system prompt.** Realistic for a lot of pipelines, but a deployment with a strong system prompt may behave
   differently, plausibly better, since the injected directive would no longer be the most authoritative text present.
 - **The obey rate depends on the injection being LAST, and this is the limitation I would lead with.** Measured on
-  Sonnet 5 across 720 further requests, 2026-08-13. Roughly 200 characters of neutral trailing text after the injection
-  takes obedience to **0.000**, reproduced in two independent batches; an output-format demand instead of boilerplate
-  does the same. Task-level one-sided 95% upper bound on those zeros, 0.139. Shorter trailing text only *partly*
-  suppresses: 25 chars → 0.475, 50 → 0.250, 100 → 0.450 against controls of 0.79 to 0.85. So a long footer plausibly
-  defeats this result and a short one plausibly does not. I will not put a shape on the curve between 25 and 100
-  characters, because my rungs varied wording as well as length and the two are confounded in that design.
-  Three registered forecasts across these batches were wrong; the one that survived was that a gradient exists at all.
-- **The 0.80 is one batch, and the same prompt re-run gives 0.738, 0.787 and 0.850.** Mean 0.792 across three
-  independent controls. The published figure is well centred, but read it as roughly 0.79 ± 0.06 rather than as a point.
+  Sonnet 5 across 1,200 further requests, 2026-08-13. Appending neutral trailing text after the injection suppresses
+  obedience as a function of its length, on a ladder where each rung is a strict prefix of the next so wording is held
+  constant:
+
+  | trailing text | obey |
+  |---|---|
+  | none (published condition) | 0.825 |
+  | 25 chars | 0.713 |
+  | 50 chars | 0.650 |
+  | **100 chars** | **0.263** |
+  | 200 chars | 0.000 |
+  | 400 chars | 0.013 |
+
+  The collapse happens between 50 and 100 characters and completes by 200. So a short footer or signature line does
+  **not** defeat this result, and a paragraph does. **This is a Sonnet 5 property, not a general one:** the same
+  payload-first versus payload-last contrast on two open-weight models moved nothing (gemma4:31b obeyed 1.0000 either
+  way, qwen3.5:9b 0.2109 versus 0.1836, both inside MEOI 0.05), so do not read it as a positional mitigation. The 0.000 at 200 chars reproduces across three independent batches;
+  the 0.013 at 400 is one obeying trial, and I report it rather than rounding to a floor.
+
+  An earlier version of this note gave 25 → 0.475 and 50 → 0.250 from a first ladder whose rungs varied wording as well
+  as length. Those low values were the wording, not the length. Re-run with nested content, short trailing text
+  suppresses far less than I first reported, and I would rather correct my own correction than leave the scarier
+  number standing.
+- **The 0.80 is one batch — and it has now been replicated four times.** Same-prompt controls across independent runs:
+  0.738, 0.787, 0.850, 0.825. **Mean exactly 0.800**, range 0.738–0.850. The published point estimate lands dead on the
+  mean, so read it as ~0.80 with a batch-to-batch spread of about ±0.06 rather than as a single measurement.
 - **Synthetic tasks with programmatic oracles**, not real software-engineering work graded by its own test suite.
 - **A null is not proof of safety**, and Opus's clean sheet is four tests on one task family.
 
