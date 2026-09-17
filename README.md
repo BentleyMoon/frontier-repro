@@ -45,6 +45,8 @@ asked to audit the prompt). If a number in the post looks wrong, this script is 
 
 ```
 reproduce.py   one-command re-derivation of the 3-model legibility table (stdlib only)
+recency.py     re-grades 1,200 raw Sonnet 5 completions for the trailing-text scope condition
+               and the four same-prompt replications; exits nonzero if any published figure fails
 joint_table.py did it detect and obey the SAME tasks? (stdlib only; answers the
                obvious objection to the marginal rates, and states what it does
                not establish)
@@ -54,6 +56,9 @@ data/          raw completions + manifests, per model:
                  frontier_mpa_<model>_manifest.json   custom_id -> (task, condition)
                  FRONTIER_AC_claude-sonnet-5_RESULT.json   authority-costume summary (+0.307)
                  FRONTIER_CFA_claude-sonnet-5_RESULT.json  CoT-sway summary (+0.015 null)
+                 frontier_intraj*_claude-sonnet-5_{requests,results,manifest}  the recency batches:
+                   intraj (suspicion in-trajectory), intrajdec (filler vs format),
+                   intrajlad (first ladder, wording confounded), intrajlad2 (nested ladder)
 CITATION.cff   how to cite this
 ```
 
@@ -87,6 +92,15 @@ are in `data/` for anyone who wants to check that layer too.
 
 ## Honest scope
 
+- **Not the first report of detection without resistance.** arXiv:2606.07808 (June 2026) names this mode across
+  four model families, about a month before these runs. This is an independent replication. The contribution
+  here is the presentation channel: the identical payload moving compliance 0.00 -> 0.33 by changing what it
+  claims to be.
+- **The 0.80 needs the injection to be the LAST text in the prompt.** On a nested length ladder: 25 chars of
+  trailing text -> 0.713, 50 -> 0.650, 100 -> 0.263, 200 -> 0.000. It is Sonnet-5-specific: the same position
+  contrast moved nothing on gemma4:31b or qwen3.5:9b. `python recency.py`.
+- **The 0.80 replicates.** Four independent same-prompt batches: 0.738, 0.787, 0.825, 0.850, mean 0.800.
+
 - **One vendor** (Anthropic), three models. No cross-vendor test.
 - **Small n**: 20 tasks (legibility), 14 (authority). The authority result's CI excludes zero (so the
   POSITIVE stands) but is not high-powered. A preliminary receipt, not a replicated theorem.
@@ -108,7 +122,7 @@ version DOI, so the citation stays valid across releases.
 
     Moon, Bentley (ORCID 0009-0003-0053-1661). "Detection is not resistance:
     frontier prompt-injection receipts." https://github.com/BentleyMoon/frontier-repro
-    Commit d4355b5.
+    Release v1.0.0.
 
 ## Contact and corrections
 
