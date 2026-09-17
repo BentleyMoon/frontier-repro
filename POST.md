@@ -2,7 +2,7 @@
 
 *Single author, independent. Every number below re-derives from the committed data, with batch IDs and result JSONs at
 the end. Code and raw completions: [github.com/BentleyMoon/frontier-repro](https://github.com/BentleyMoon/frontier-repro), pinned at release [`v1.0.0`](https://github.com/BentleyMoon/frontier-repro/releases/tag/v1.0.0). Every number below re-derives from that release, including the 2026-08-13 corrections (`python recency.py`); earlier drafts were pinned at `d4355b5`, which does not contain the recency batches.
-`reproduce.py` needs no API key and no network. I wrote this to be falsified. If I am wrong, I want to know.*
+Cite as doi:[10.5281/zenodo.22805797](https://doi.org/10.5281/zenodo.22805797). `reproduce.py` needs no API key and no network. I wrote this to be falsified. If I am wrong, I want to know.*
 
 ## The short version
 

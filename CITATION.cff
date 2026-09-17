@@ -9,6 +9,7 @@ authors:
 type: dataset
 license: MIT
 version: 1.0.1
+doi: 10.5281/zenodo.22805797
 date-released: "2026-09-17"
 repository-code: "https://github.com/BentleyMoon/frontier-repro"
 url: "https://bentleymoon.com"
