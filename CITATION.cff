@@ -9,7 +9,7 @@ authors:
 type: dataset
 license: MIT
 version: 1.0.0
-date-released: "2026-08-06"
+date-released: "2026-09-17"
 repository-code: "https://github.com/BentleyMoon/frontier-repro"
 url: "https://bentleymoon.com"
 keywords:
@@ -20,16 +20,19 @@ keywords:
   - verification
 abstract: >
   Preregistered Batch-API tests of prompt-injection resistance across three frontier
-  models (Claude Opus 4.8, Sonnet 5, Haiku 4.5). Sonnet 5 detects 100% of a blatant
-  injection while obeying 80% of it: detection is not resistance. Task-level pairing
-  shows complete overlap, 20 of 20 tasks both detected on every audit sample and
-  obeyed on at least one, though detection is measured in a separate audit condition
-  rather than inside the obedience trajectory. A follow-up isolates the mechanism as
-  channel/authority deference rather than general manipulability, and shows a
-  block-labeling defense that drives observed compliance to zero at n=14 (one-sided
-  95% upper bound approximately 19%). That defense has since replicated on an
-  open-weight 31B model at n=200 with obedience falling from 0.99 to 0.00, including
-  against an attacker told the defense was in place; the same labeling applied to a
-  reviewing model rather than the acting model degraded its discrimination instead,
-  so the result is scoped to the actor channel. Raw completions ship with stdlib-only
-  re-derivation scripts requiring no API key and no network.
+  models (Claude Opus 4.8, Sonnet 5, Haiku 4.5). Sonnet 5 detects a blatant injection on
+  every audit probe while obeying it on 16 of 20 tasks (0.80, 95% CI 0.58-0.92). This is an
+  independent replication of detection without resistance, a mode reported first in
+  arXiv:2606.07808; it is not claimed as a discovery. The obey rate replicates across four
+  independent same-prompt batches (0.738, 0.787, 0.825, 0.850; mean 0.800) but is
+  contingent on the injection being the last text in the prompt: on a length ladder with
+  wording held constant, trailing neutral text takes it to 0.263 at 100 characters and
+  0.000 at 200, and the same position contrast moved nothing on two open-weight models.
+  The contribution beyond replication is the presentation channel: the identical payload
+  moves Sonnet 5 from 0.00 to 0.33 compliance only when it wears a System, tool-output or
+  cited-spec costume (+0.307, 90% CI 0.226-0.390, n=14), while the same model resists a
+  fabricated reasoning technique (powered null). A block-labeling defense drove observed
+  compliance to zero at n=14 (one-sided 95% upper bound about 19%); applied to a reviewing
+  rather than an acting model it degraded discrimination, so it is scoped to the actor
+  channel. Raw completions ship with stdlib-only re-derivation scripts (reproduce.py,
+  joint_table.py, recency.py) requiring no API key and no network.

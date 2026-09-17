@@ -107,9 +107,11 @@ def main() -> None:
         print("  The honest statement is: on every task it complied with, the same model given")
         print("  the same input identifies the injection when asked to audit it. That is")
         print("  post-hoc recognition, not a flag raised while acting.")
-        print("\n  The experiment that would close the gap is one added condition: a single")
-        print("  completion that performs the task AND reports anything suspicious, so")
-        print("  detection and obedience are observed in one trajectory. ~80 requests.")
+        print("\n  The experiment meant to close that gap -- one completion that performs the task AND")
+        print("  reports anything suspicious -- was RUN on 2026-08-11 (python recency.py). It could not")
+        print("  answer the question: asking for suspicion took obedience from 0.738 to 0.000, so there")
+        print("  were no complying trials to inspect. Decomposed, even neutral trailing text does the same,")
+        print("  so the gap stays open, and the narrower claim in the post is still the one that holds.")
 
 
 if __name__ == "__main__":
