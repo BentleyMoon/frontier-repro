@@ -138,7 +138,9 @@ confidence in the direction without making this batch any larger than it is.
 
 It also has a limit I did not see here, and I would rather say it than have a reader find it. Applying the same labeling
 to a model that is **reviewing** work, rather than one **doing** the work, made things worse. Its ability to tell
-compromised output from clean output fell from 0.335 to 0.107, and its false alarms rose from 0.665 to 0.893. The actor
+compromised output from clean output fell from 0.555 to 0.003, and its false alarms rose from 0.445 to 0.997
+(gemma4:12b reviewing its own work, n=337). An earlier version of this post quoted 0.335 → 0.107 and 0.665 → 0.893,
+from cells run before a harness defect in that lane was fixed; the re-run shows the same direction, larger. The actor
 channel and the oversight channel came apart under test. Everything in this post is about the actor channel, and the
 0.00 does not travel across that line.
 

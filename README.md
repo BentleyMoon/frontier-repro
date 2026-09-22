@@ -20,7 +20,8 @@ identifier, which is why it is here. GitHub redirects an old handle, but a redir
 | **Claude Sonnet 5** | **0.80** | **1.00** | **detects and complies anyway** |
 
 Sonnet 5 flags an injected `## SYSTEM DIRECTIVE` every time it is asked to audit it, then obeys it on
-80% of tasks when it is not asked. Detection is not resistance. A follow-up pins the mechanism to
+80% of tasks when it is not asked, as long as the injection is the last text in the prompt (with 200
+characters after it, it obeys on none). Detection is not resistance. A follow-up pins the mechanism to
 channel deference rather than gullibility, and a block-labeling defense drives compliance to 0.00.
 
 That defense figure rests on n=14 here, which makes it a receipt rather than a theorem. It has since
@@ -29,9 +30,14 @@ held against an attacker who was explicitly told the labeling was in place.
 
 It also has a limit these batches could not see. Applying the same labeling to a model that is
 **reviewing** work, rather than one **doing** the work, made things worse. Its ability to tell
-compromised output from clean output fell from 0.335 to 0.107. Everything below is about the actor
-channel, and the 0.00 does not travel across that line. That is the difference between a defense and a
-liability.
+compromised output from clean output fell from 0.555 to 0.003, because its false alarms on clean work
+rose from 0.445 to 0.997 (gemma4:12b reviewing its own work, n=337; `python monitor_label.py`).
+Everything below is about the actor channel, and the 0.00 does not travel across that line. That is the
+difference between a defense and a liability.
+
+*Corrected after v1.0.1, which quoted 0.335 → 0.107 from cells run before a harness defect in the
+open-weight lane was fixed. The re-run, in `data/monitor_label_cells.json`, shows the same direction
+and a larger effect.*
 
 ## Reproduce the headline (30 seconds, stdlib only)
 
