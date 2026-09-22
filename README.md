@@ -175,7 +175,7 @@ across releases.
 
     Moon, Bentley (ORCID 0009-0003-0053-1661). "Detection is not resistance:
     frontier prompt-injection receipts." https://github.com/BentleyMoon/frontier-repro
-    Release v1.0.1. doi:10.5281/zenodo.22805797
+    Release v1.1.0. doi:10.5281/zenodo.22805797
 
 ## Contact and corrections
 
