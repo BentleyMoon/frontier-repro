@@ -8,9 +8,9 @@ authors:
     website: "https://bentleymoon.com"
 type: dataset
 license: MIT
-version: 1.0.1
+version: 1.1.0
 doi: 10.5281/zenodo.22805797
-date-released: "2026-09-17"
+date-released: "2026-09-22"
 repository-code: "https://github.com/BentleyMoon/frontier-repro"
 url: "https://bentleymoon.com"
 keywords:
@@ -34,6 +34,14 @@ abstract: >
   cited-spec costume (+0.307, 90% CI 0.226-0.390, n=14), while the same model resists a
   fabricated reasoning technique (powered null). A block-labeling defense drove observed
   compliance to zero at n=14 (one-sided 95% upper bound about 19%); applied to a reviewing
-  rather than an acting model it degraded discrimination, so it is scoped to the actor
-  channel. Raw completions ship with stdlib-only re-derivation scripts (reproduce.py,
-  joint_table.py, recency.py) requiring no API key and no network.
+  rather than an acting model it degraded discrimination (0.555 to 0.003 on a leak-free
+  re-run), so it is scoped to the actor channel. v1.1.0 adds that reviewer-side line of work
+  on open-weight monitors (12B-35B, n=337 per cell, each result replicated on a second task
+  pool): a recorded verdict can be the attacker's appended word; the untrusted-input label
+  makes a monitor obey dictated verdicts it otherwise ignores; score-mode and verdict-first
+  formats fall to an automated payload search; placement on the answer's line decides
+  verdict-first; monitor diversity defeats only single-member triggers; and the one defense
+  that held, showing the monitor only the extracted integer, fails once an LLM does the
+  extracting. Raw completions and per-item verdicts ship with stdlib-only re-derivation
+  scripts (reproduce.py, joint_table.py, recency.py, monitor_label.py, oversight.py)
+  requiring no API key and no network.
