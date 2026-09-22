@@ -35,13 +35,13 @@ abstract: >
   fabricated reasoning technique (powered null). A block-labeling defense drove observed
   compliance to zero at n=14 (one-sided 95% upper bound about 19%); applied to a reviewing
   rather than an acting model it degraded discrimination (0.555 to 0.003 on a leak-free
-  re-run), so it is scoped to the actor channel. v1.1.0 adds that reviewer-side line of work
-  on open-weight monitors (12B-35B, n=337 per cell, each result replicated on a second task
-  pool): a recorded verdict can be the attacker's appended word; the untrusted-input label
-  makes a monitor obey dictated verdicts it otherwise ignores; score-mode and verdict-first
-  formats fall to an automated payload search; placement on the answer's line decides
-  verdict-first; monitor diversity defeats only single-member triggers; and the one defense
-  that held, showing the monitor only the extracted integer, fails once an LLM does the
-  extracting. Raw completions and per-item verdicts ship with stdlib-only re-derivation
-  scripts (reproduce.py, joint_table.py, recency.py, monitor_label.py, oversight.py)
-  requiring no API key and no network.
+  re-run), so it is scoped to the actor channel. Version 1.1.0 adds the reviewer side,
+  measured on open-weight monitors (12B-35B, n=337 per cell, most results replicated on a
+  second task pool). A monitor's recorded verdict can be the attacker's appended word. The
+  untrusted-input label makes a monitor obey dictated verdicts it otherwise ignores.
+  Score-mode and verdict-first formats fall to an automated payload search, and monitor
+  diversity stops only attacks aimed at one monitor. The one defense that held, showing the
+  monitor only the extracted integer, fails once an LLM does the extracting. Raw completions
+  and per-item verdicts ship with stdlib-only re-derivation scripts (reproduce.py,
+  joint_table.py, recency.py, monitor_label.py, oversight.py) that need no API key and no
+  network.

@@ -1,7 +1,7 @@
 # Detection is not resistance
 
 *Single author, independent. Every number below re-derives from the committed data, with batch IDs and result JSONs at
-the end. Code and raw completions: [github.com/BentleyMoon/frontier-repro](https://github.com/BentleyMoon/frontier-repro), pinned at release [`v1.0.0`](https://github.com/BentleyMoon/frontier-repro/releases/tag/v1.0.0). Every number below re-derives from that release, including the 2026-08-13 corrections (`python recency.py`); earlier drafts were pinned at `d4355b5`, which does not contain the recency batches.
+the end. Code and raw completions: [github.com/BentleyMoon/frontier-repro](https://github.com/BentleyMoon/frontier-repro), pinned at release [`v1.1.0`](https://github.com/BentleyMoon/frontier-repro/releases/tag/v1.1.0). Every number below re-derives from that release, including the 2026-08-13 corrections (`python recency.py`) and the 2026-09-22 correction to the reviewer-side labeling limit (`python monitor_label.py`). Earlier drafts were pinned at `v1.0.0` and, before that, `d4355b5`, which does not contain the recency batches.
 Cite as doi:[10.5281/zenodo.22805797](https://doi.org/10.5281/zenodo.22805797). `reproduce.py` needs no API key and no network. I wrote this to be falsified. If I am wrong, I want to know.*
 
 ## The short version
@@ -142,7 +142,8 @@ compromised output from clean output fell from 0.555 to 0.003, and its false ala
 (gemma4:12b reviewing its own work, n=337). An earlier version of this post quoted 0.335 → 0.107 and 0.665 → 0.893,
 from cells run before a harness defect in that lane was fixed; the re-run shows the same direction, larger. The actor
 channel and the oversight channel came apart under test. Everything in this post is about the actor channel, and the
-0.00 does not travel across that line.
+0.00 does not travel across that line. What happens on the reviewer's side is in the repository README, under "The
+oversight channel".
 
 ### 3b. Sonnet 5 resists a different manipulation, which is what pins the mechanism
 

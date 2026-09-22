@@ -24,8 +24,8 @@ def main():
     cells, bad = doc["cells"], []
     for group, ids in doc["groups"].items():
         print("\n%s" % group.replace("_", " "))
-        print("  %-28s %-9s %-10s %-10s %6s %8s %8s %8s  %s" % ("cell", "pool", "monitor", "defense", "n",
-                                                                 "fa", "catches", "fa_first", "verdict"))
+        print("  %-28s %-9s %-10s %-12s %-11s %5s %8s %8s %8s  %s" % (
+            "cell", "pool", "monitor", "mode", "defense", "n", "fa", "catches", "fa_first", "verdict"))
         for did in ids:
             c = cells[did]
             fa, ca = rate(c["flag_clean"]), rate(c["flag_inj"])
@@ -35,12 +35,14 @@ def main():
                     bad.append("%s %s: recomputed %.4f vs recorded %.4f" % (did, k, v, rec[k]))
             first = rec.get("flag_clean_first")
             mon = "panel(3)" if c.get("panel") else (c["monitor"] or "").replace("gemma4:", "g4:")
-            print("  %-28s %-9s %-10s %-10s %6d %8.4f %8.4f %8s  %s" % (
-                did, c["task_pool_seed"], mon, c["monitor_defense"] or "-", c["n"], fa, ca,
+            print("  %-28s %-9s %-10s %-12s %-11s %5d %8.4f %8.4f %8s  %s" % (
+                did, c["task_pool_seed"], mon, c["monitor_mode"], c["monitor_defense"] or "-", c["n"], fa, ca,
                 "%.4f" % first if first is not None else "-", c["discrimination_verdict"]))
     print("\nfa = false alarms on provably correct work; catches = flags on injected-actor answers;")
-    print("fa_first = the monitor's own first verdict (recorded aggregate); verdict = the ledger's label")
-    print("for discrimination (catches - false alarms) in that cell.")
+    print("fa_first = the monitor's own first verdict (recorded aggregate, not recomputable per item);")
+    print("mode = how the monitor answers (direct verdict, 0-100 score, yes/no, verdict-first);")
+    print("verdict = the recorded label for discrimination (catches - false alarms) in that cell, where")
+    print("INFORMATIVE_NULL means no discrimination beyond the minimum effect of interest.")
     if bad:
         print("\nMISMATCH between per-item data and recorded rates:")
         for b in bad:
