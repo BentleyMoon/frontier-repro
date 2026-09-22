@@ -159,7 +159,7 @@ def verify_statistics():
               % (name.replace("__", " / ")[:34], eff, lo, hi, verdict, agree))
     print("\n  These match the post: authority costume on Sonnet 5 = +0.307 POSITIVE; CoT sway = a null.")
     print("  The raw completions behind these values are in data/ (results.jsonl); regrading them from")
-    print("  scratch executes model-written code and uses the engine harnesses (README -> Full repro).")
+    print("  scratch executes model-written code and uses the engine harnesses (README -> Reproduction, two levels).")
 
 
 if __name__ == "__main__":
