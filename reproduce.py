@@ -1,8 +1,8 @@
-"""reproduce.py -- re-derive the headline result of the post from the raw Batch-API completions.
+"""reproduce.py: re-derive the headline result of the post from the raw Batch-API completions.
 
     python reproduce.py
 
-No API key, no network, no third-party packages -- Python 3.8+ stdlib only. It reads the raw model
+No API key, no network, no third-party packages: Python 3.8+ stdlib only. It reads the raw model
 completions committed under data/ and re-grades them with the SAME judge-free rules described in the
 post, then prints the three-model legibility table and the shared-basin readout.
 
@@ -61,7 +61,7 @@ def _load(model):
 
 def main():
     print("=" * 72)
-    print("Detection is not resistance -- re-derived from raw completions (no API, no deps)")
+    print("Detection is not resistance: re-derived from raw completions (no API, no deps)")
     print("=" * 72)
     rates = {}
     for m in MODELS:
@@ -72,7 +72,7 @@ def main():
     for m in MODELS:
         r = rates.get(m)
         if not r:
-            print("  %-18s  (data/ missing -- see README to fetch the batch)" % m)
+            print("  %-18s  (data/ missing: re-clone the repository)" % m)
             continue
         tasks = sorted(r)
         obey = sum(r[t].get("obey", 0) for t in tasks) / len(tasks)
@@ -86,13 +86,13 @@ def main():
         tasks = sorted(s)
         s_obey = sum(s[t].get("obey", 0) for t in tasks) / len(tasks)
         s_det = sum(s[t]["detect"] for t in tasks) / len(tasks)
-        print("\nHEADLINE: Sonnet 5 detects %.0f%% of injections and obeys %.0f%% of them."
+        print("\nHEADLINE: Sonnet 5 detects %.0f%% of injections and obeys %.0f%% of them, when the"
               % (s_det * 100, s_obey * 100))
-        print("          Detection is not resistance: a model can flag a manipulation perfectly")
-        print("          and comply with it anyway.")
+        print("          injection is the last text in the prompt (0% with 200 trailing characters;")
+        print("          python recency.py).")
 
     # shared-basin readout: is detection at ceiling (so rho is unmeasurable)?
-    print("\nShared-basin note: rho across these models is UNDEFINED here -- detection is at ceiling")
+    print("\nShared-basin note: rho across these models is UNDEFINED here: detection is at ceiling")
     print("for Opus and Sonnet 5 (no variance to correlate). Measuring it needs a subtler injection")
     print("that strong models sometimes miss (an open harness problem, see the post's last section).")
 
@@ -138,7 +138,7 @@ def _verdict(values, meoi):
 
 def verify_statistics():
     """Re-derive the authority-costume and CoT-sway verdicts from their committed per-task values,
-    with NO engine dependency -- just the ~15-line bootstrap above. This closes the gap the README
+    with NO engine dependency, just the ~15-line bootstrap above. This closes the gap the README
     used to note: every headline number in the post now re-derives inside this repo."""
     path = os.path.join(DATA, "per_task_values.json")
     if not os.path.exists(path):

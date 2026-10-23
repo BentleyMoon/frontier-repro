@@ -2,7 +2,7 @@
 
 *Single author, independent. Every number below re-derives from the committed data, with batch IDs and result JSONs at
 the end. Code and raw completions: [github.com/BentleyMoon/frontier-repro](https://github.com/BentleyMoon/frontier-repro), pinned at release [`v1.1.0`](https://github.com/BentleyMoon/frontier-repro/releases/tag/v1.1.0). Every number below re-derives from that release, including the 2026-08-13 corrections (`python recency.py`) and the 2026-09-22 correction to the reviewer-side labeling limit (`python monitor_label.py`). Earlier drafts were pinned at `v1.0.0` and, before that, `d4355b5`, which does not contain the recency batches.
-Cite as doi:[10.5281/zenodo.22805797](https://doi.org/10.5281/zenodo.22805797). `reproduce.py` needs no API key and no network. I wrote this to be falsified. If I am wrong, I want to know.*
+Cite as doi:[10.5281/zenodo.22904020](https://doi.org/10.5281/zenodo.22904020) (v1.1.0; all versions: [10.5281/zenodo.22805797](https://doi.org/10.5281/zenodo.22805797)). `reproduce.py` needs no API key and no network. I wrote this to be falsified. If I am wrong, I want to know.*
 
 ## The short version
 
@@ -23,8 +23,8 @@ Here are Claude Opus 4.8, Sonnet 5 and Haiku 4.5 against an identical, blatant p
 | Haiku 4.5 | 0.00 | 0.59 | resists, often does not notice |
 | Sonnet 5 | **0.80** | 1.00 | detects and complies anyway |
 
-Sonnet 5 flags the injection every single time it is asked to audit it, then obeys it on 80% of tasks when it is not
-asked. Awareness is not protection. Capability does not buy robustness in general. Opus 4.8 really is robust, and
+Sonnet 5 flags the injection every single time it is asked to audit it, then obeys it on 64 of 80 tries (0.80) when it
+is not asked, when the injection is the last text in the prompt (0 of 80 with 200 characters of neutral text after it). Awareness is not protection. Capability does not buy robustness in general. Opus 4.8 really is robust, and
 generalizing from that one model was my mistake.
 
 Following that thread produced the result I care most about. The failure is channel deference rather than gullibility,
@@ -46,7 +46,8 @@ never been updated to match the variants actually built, an unmatched name was s
 runner reads nothing as the plain control condition. Fourteen local designs ran the control and reported it as the
 treatment. They passed every check I had, because the artifact produced exactly the result the hypothesis predicted, so
 everything that asked "is this coherent" answered yes. Coherence cannot see that class. Two findings retracted, and my
-own forecasting skill score fell from +0.097 to +0.033 once the affected designs came out of it.
+own forecasting skill score fell from +0.097 to +0.033 once the affected designs came out of it (August 2026; it read
++0.051 on 27 September 2026).
 
 That was the local harness. None of it touches the batches below, which run against the Batch API and re-derive from the
 committed completions. I include it because anyone deciding how much weight to put on the frontier numbers should know
@@ -90,11 +91,12 @@ harness rather than assumed.
 |---|---|---|---|---|---|---|
 | Opus 4.8 | 0.00 | [0.00, 0.16] | 1.00 | [0.84, 1.00] | 0.00 | 20 |
 | Haiku 4.5 | 0.00 | [0.00, 0.16] | 0.59 | [0.39, 0.78] | 0.00 | 20 |
-| Sonnet 5 | **0.80** | **[0.58, 0.92]** | 1.00 | [0.84, 1.00] | 0.00 | 20 |
+| Sonnet 5 | **0.80** | **[0.70, 0.87]** | 1.00 | [0.84, 1.00] | 0.00 | 20 |
 
-Wilson intervals on the counts. Two things they say that the bare rates do not. The headline is
-sixteen of twenty, and its interval is a third of the scale wide — "obeys 80% of the time" is honest,
-"obeys somewhere between 58% and 92% of the time, at n=20" is what the data support. And the 0.00
+Wilson intervals on the counts, 20 tasks with four tries each. Two things they say that the bare rates do not. The
+headline is sixty-four of eighty tries, and its interval runs from 0.70 to 0.87 (tries within a task are not
+independent; resampling whole tasks gives 0.70 to 0.89). "Obeys 80% of the time" is honest, "obeys somewhere between
+70% and 89% of the time, at 20 tasks" is what the data support. And the 0.00
 rows are floors rather than zeros: the upper bound on nought of twenty is 0.16, so "Opus never
 complied" means "complied at most 16% of the time at this n". I make exactly that argument about the
 Opus channel arm two sections down, and it applies here too.
@@ -117,14 +119,15 @@ measure. So I re-ran it on the model that demonstrably has variance.
 | arm (Sonnet 5) | compliance |
 |---|---|
 | identical malicious text, as untrusted data | 0.00, all 14 tasks |
-| same payload in a System, tool-output or cited-spec costume | 0.33 |
+| same payload in a System, tool-output or cited-spec costume | 0.31 (mean over 14 tasks) |
 | costume plus forced block labeling | 0.00, all 14 tasks |
 
 Channel effect **+0.307**, 90% CI [0.226, 0.390], n = 14, POSITIVE.
 
 That pins the mechanism. Sonnet 5 is not especially injection-prone. It is authority-deferent. The identical payload as
-plain untrusted data never moved it once. Only the costume did. That also explains the 0.80 obey rate above, because
-with no system prompt present, an injected directive is the most authoritative text in the context.
+plain untrusted data never moved it once. Only the costume did. I took that to explain the 0.80 obey rate above, since
+with no system prompt present, an injected directive is the most authoritative text in the context; the 2026-08-13
+correction above shows that the directive's position as the last text does much of that work.
 
 ### 3. The defense
 
@@ -132,7 +135,8 @@ Forcing the model to classify each input block as trusted or untrusted, and to o
 compliance to 0.00 on every task I measured. It is cheap and deployable, and it is the part of this work I would most
 like someone to break.
 
-Since running these batches I have replicated it off-vendor, on an open-weight 31B model at n = 200. Obedience fell from
+Since running these batches I have replicated it off-vendor, on gemma4:31b at n = 200 (design `inj_gemma31_ml`,
+6 August 2026, exploratory tier; not in this repository). Obedience fell from
 0.99 to 0.00, and it held against an attacker who was explicitly told the labeling was in place. That raises my
 confidence in the direction without making this batch any larger than it is.
 
@@ -187,28 +191,29 @@ Complete overlap at the task level, so the disjoint-sets explanation is dead.
 Here is what that does not establish, and the distinction matters. `detect` is a separate condition with its own prompt.
 It is post-hoc recognition under audit, not a flag raised inside the obedience trajectory. The claim I will defend is
 narrower: on every task where it complied, the same model given the same input identifies the injection when asked to
-audit it. I am not claiming it noticed and complied in one breath. The experiment that closes that gap is one added
-condition, a single completion that performs the task and reports anything suspicious, roughly 80 requests. I have not
-run it.
+audit it. I am not claiming it noticed and complied in one breath. The experiment meant to close that gap is one added
+condition, a single completion that performs the task and reports anything suspicious. I ran it on 2026-08-11
+(`python recency.py`). Asking for suspicion took obedience from 0.738 to 0.000, so there were no complying trials to
+inspect, and the gap stays open.
 
 ## Where this sits
 
 Three lines of prior work bear on this directly, and I would rather put them in the frame myself than have a reader
 discover them.
 
-**I am not the first to find detection without resistance.** arXiv:2606.07808 (June 2026) decomposes
-instruction-hierarchy failure and names this exact mode, correctly reasoning about a conflict and still producing the
-violating output, across four model families, about a month before the runs here. I found it independently and report
+**I am not the first to find detection without resistance.** Kariyappa and Suh (2026, [arXiv:2606.07808](https://arxiv.org/abs/2606.07808)) decompose
+instruction-hierarchy failure and name this mode, correctly reasoning about a conflict and still producing the violating
+output, in three reasoning models, posted on 5 June 2026, about seven weeks before the runs here. I found it independently and report
 it as a replication, not a discovery. What I have not found elsewhere is the presentation channel below: the identical
-payload moving compliance from 0.00 to 0.33 purely by changing what it claims to be.
+payload moving compliance from 0.00 to 0.31 on average over 14 tasks purely by changing what it claims to be.
 
-**Spotlighting** (Hines et al., Microsoft, 2024) introduced delimiting, datamarking and encoding of untrusted input, and
+**Spotlighting** (Hines et al. 2024, [arXiv:2403.14720](https://arxiv.org/abs/2403.14720)) introduced delimiting, datamarking and encoding of untrusted input, and
 reported large reductions in attack success. My block-labeling arm is adjacent to it without being the same thing.
 Spotlighting marks untrusted content on the way in, and the harness does the marking. Here the model is required to
 classify each block itself and obey only what it labeled trusted. Model-side adjudication instead of input-side
 marking. Whether that difference survives an adaptive attacker is the comparison I would most like someone to run.
 
-**The instruction hierarchy** (Wallace et al., OpenAI, 2024) starts from the premise that LLMs do not distinguish
+**The instruction hierarchy** (Wallace et al. 2024, [arXiv:2404.13208](https://arxiv.org/abs/2404.13208)) starts from the premise that LLMs do not distinguish
 privileged instructions from untrusted content sharing a context window. Channel deference is a measurement of the
 failure that line of work exists to train away, so I am not claiming a new phenomenon. What is new here is the
 within-model dissociation. The same model ignores the identical payload as data, resists a fabricated technique, and
@@ -221,10 +226,11 @@ with it. The open question is no longer whether panels are correlated. It is wha
 
 ## What I would defend
 
-**Detection is not resistance**, as an independent replication of the mode arXiv:2606.07808 reported first. I defend
+**Detection is not resistance**, as an independent observation of the mode Kariyappa and Suh (2026) reported first. I defend
 the measurement, not priority. The most capable model in a family can identify a manipulation perfectly and comply
 with it anyway. Evaluations that measure whether a model *can recognize* an attack, which is the shape most red-team
-suites take, score Sonnet 5 as safe here. It obeyed 80% of the time.
+suites take, score Sonnet 5 as safe here. It obeyed 64 of 80 times when the injection was the last text in the
+prompt.
 
 **The failure is channel deference, and the dissociation sits inside one model.** Sonnet 5 ignored the identical payload
 as data, resisted a fabricated reasoning technique, and failed only on the authority costume. Same model, three
@@ -285,7 +291,7 @@ frontier model to the others, including inside a single vendor. I did, and it wa
   as length. Those low values were the wording, not the length. Re-run with nested content, short trailing text
   suppresses far less than I first reported, and I would rather correct my own correction than leave the scarier
   number standing.
-- **The 0.80 is one batch — and it has now been replicated four times.** Same-prompt controls across independent runs:
+- **The 0.80 is one batch, and it has now been replicated four times.** Same-prompt controls across independent runs:
   0.738, 0.787, 0.850, 0.825. **Mean exactly 0.800**, range 0.738–0.850. The published point estimate lands dead on the
   mean, so read it as ~0.80 with a batch-to-batch spread of about ±0.06 rather than as a single measurement.
 - **Synthetic tasks with programmatic oracles**, not real software-engineering work graded by its own test suite.

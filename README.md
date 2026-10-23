@@ -10,7 +10,7 @@ By **Bentley Moon**, independent AI-safety researcher.
 [bentleymoon.com](https://bentleymoon.com) ·
 [ORCID 0009-0003-0053-1661](https://orcid.org/0009-0003-0053-1661).
 Published from the GitHub handle `BentleyMoon`, formerly `Vingadden`. The ORCID above is the durable
-identifier, which is why it is here. GitHub redirects an old handle, but a redirect is not a citation.
+identifier.
 
 ## The result in one table
 
@@ -20,22 +20,26 @@ identifier, which is why it is here. GitHub redirects an old handle, but a redir
 | Claude Haiku 4.5 | 0.00 | 0.59 | resists, often doesn't notice |
 | **Claude Sonnet 5** | **0.80** | **1.00** | **detects and complies anyway** |
 
-Sonnet 5 flags an injected `## SYSTEM DIRECTIVE` every time it is asked to audit it, then obeys it on
-80% of tasks when it is not asked, as long as the injection is the last text in the prompt. Followed
-by 200 characters of neutral text, it obeyed in 0 of 80 attempts. Detection is not resistance. A follow-up pins the mechanism to
-channel deference rather than gullibility, and a block-labeling defense drives compliance to 0.00.
+Rates are over 20 tasks with four tries each. Sonnet 5's 0.80 is 64 of 80 tries (Wilson 95% interval
+0.70 to 0.87; tries within a task are not independent, and resampling whole tasks gives 0.70 to 0.89),
+with the injection as the last text in the prompt.
 
-That defense figure rests on n=14 here, which makes it a receipt rather than a theorem. It has since
-replicated off-vendor on an open-weight 31B model at n=200, where obedience fell from 0.99 to 0.00 and
-held against an attacker who was explicitly told the labeling was in place.
+Sonnet 5 flags an injected `## SYSTEM DIRECTIVE` every time it is asked to audit it, then obeys it on
+64 of 80 tries when it is not asked, as long as the injection is the last text in the prompt. Followed
+by 200 characters of neutral text, it obeyed in 0 of 80 attempts. A follow-up found that what moves it is
+the channel the payload claims to come from, and a block-labeling defense brought observed compliance to
+0 of 14 tasks.
+
+That defense figure rests on n=14 here. It has since replicated off-vendor on gemma4:31b at n=200
+(design `inj_gemma31_ml`, 6 August 2026, exploratory tier; not in this repository), where obedience fell
+from 0.99 to 0.00 and held against an attacker who was explicitly told the labeling was in place.
 
 It also has a limit these batches could not see. Applying the same labeling to a model that is
 **reviewing** work, rather than one **doing** the work, made things worse. Its ability to tell
 compromised output from clean output fell from 0.555 to 0.003, because its false alarms on clean work
 rose from 0.445 to 0.997 (gemma4:12b reviewing its own work, n=337; `python monitor_label.py`). The
-frontier results are about the actor channel, and the 0.00 does not travel across that line. That is the
-difference between a defense and a liability. The reviewer side has its own section below, "The
-oversight channel".
+frontier results are about the actor channel, and the 0.00 does not travel across that line. The
+reviewer side has its own section below, "The oversight channel".
 
 *Corrected after v1.0.1, which quoted 0.335 → 0.107 from cells run before a harness defect in the
 open-weight lane was fixed. The re-run, in `data/monitor_label_cells.json`, shows the same direction
@@ -106,12 +110,14 @@ re-grading from the raw `.jsonl` up uses the original harnesses (`frontier_autho
 --analyze`, `frontier_cot_faithfulness.py --analyze`, with `FC_MODEL=claude-sonnet-5`). The raw batches
 are in `data/` for anyone who wants to check that layer too.
 
-## Honest scope
+## Limitations
 
-- **Not the first report of detection without resistance.** arXiv:2606.07808 (June 2026) names this mode across
-  four model families, about a month before these runs. This is an independent replication. The contribution
-  here is the presentation channel: the identical payload moving compliance 0.00 -> 0.33 by changing what it
-  claims to be.
+- **Not the first report of detection without resistance.** Kariyappa and Suh (2026, [arXiv:2606.07808](https://arxiv.org/abs/2606.07808)), posted
+  on 5 June 2026, about seven weeks before these runs, diagnose this mode (a model resolves the conflict
+  correctly in its reasoning and still writes a violating response) in three reasoning models. This is an
+  independent observation of a similar gap in a different setup. The contribution here is the presentation
+  channel: the identical payload moving compliance from 0.00 to 0.31 on average over 14 tasks (+0.307, 90% CI
+  0.226 to 0.390) by changing what it claims to be.
 - **The 0.80 needs the injection to be the LAST text in the prompt.** On a nested length ladder: 25 chars of
   trailing text -> 0.713, 50 -> 0.650, 100 -> 0.263, 200 -> 0.000. It is Sonnet-5-specific: the same position
   contrast moved nothing on gemma4:31b or qwen3.5:9b. `python recency.py`.
@@ -119,7 +125,7 @@ are in `data/` for anyone who wants to check that layer too.
 
 - **One vendor** (Anthropic), three models. No cross-vendor test.
 - **Small n**: 20 tasks (legibility), 14 (authority). The authority result's CI excludes zero (so the
-  POSITIVE stands) but is not high-powered. A preliminary receipt, not a replicated theorem.
+  POSITIVE stands), but the run is below the lab's power bar: the smallest effect it could detect is 0.128.
 - **The defense's 0.00 is a floor.** "No compliance observed at n=14", not "eliminated". Replicated
   since at n=200 on an open-weight 31B model (0.99 → 0.00), which raises confidence in the direction
   without making this batch larger than it is.
@@ -176,25 +182,24 @@ prints each cell's verdict label, and exits nonzero if anything disagrees with t
 
 Read together: every monitor-side defense tested here that left attacker text in front of a model
 either backfired or was broken, by an automated search or, for the extractor, by one hand-written
-sentence. The one that held works by taking the reader out of the loop. That is available only where an
-answer has a canonical form, which is exactly where a reader was never needed. Scope: open-weight
+sentence. The one that held works by taking the reader out of the loop, which is available only where an
+answer has a canonical form. Scope: open-weight
 monitors of 12B–35B, one actor per monitor, arithmetic and lookup tasks. Frontier monitors are untested.
 
 ## Citation
 
-Machine-readable metadata is in [`CITATION.cff`](CITATION.cff). Cite the **concept DOI**,
-[10.5281/zenodo.22805797](https://doi.org/10.5281/zenodo.22805797), rather than a version DOI, so the citation stays valid
-across releases.
+Machine-readable metadata is in [`CITATION.cff`](CITATION.cff). Release v1.1.0 is
+[10.5281/zenodo.22904020](https://doi.org/10.5281/zenodo.22904020). The all-versions DOI,
+[10.5281/zenodo.22805797](https://doi.org/10.5281/zenodo.22805797), always resolves to the latest release.
 
     Moon, Bentley (ORCID 0009-0003-0053-1661). "Detection is not resistance:
     frontier prompt-injection receipts." https://github.com/BentleyMoon/frontier-repro
-    Release v1.1.0. doi:10.5281/zenodo.22805797
+    Release v1.1.0, doi:10.5281/zenodo.22904020 (all versions: 10.5281/zenodo.22805797)
 
 ## Contact and corrections
 
-Corrections are the point. If a number here does not reproduce, `reproduce.py` is where you disprove it,
-and an issue on this repository is the fastest way to say so. Independent replication on other vendors is
-the single most useful thing anyone could add.
+If a number here does not reproduce, `reproduce.py` is where you disprove it, and an issue on this
+repository is the fastest way to say so. Replication on other vendors would be the most useful addition.
 
 ## License
 
