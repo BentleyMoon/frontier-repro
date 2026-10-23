@@ -61,7 +61,7 @@ def _load(model):
 
 def main():
     print("=" * 72)
-    print("Detection is not resistance: re-derived from raw completions (no API, no deps)")
+    print("Prompt-injection detection and obedience: re-derived from raw completions (no API, no deps)")
     print("=" * 72)
     rates = {}
     for m in MODELS:

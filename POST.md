@@ -1,7 +1,6 @@
-# Detection is not resistance
+# Prompt-injection detection and obedience in three Claude models: data and re-derivation
 
-*Single author, independent. Every number below re-derives from the committed data, with batch IDs and result JSONs at
-the end. Code and raw completions: [github.com/BentleyMoon/frontier-repro](https://github.com/BentleyMoon/frontier-repro), pinned at release [`v1.1.0`](https://github.com/BentleyMoon/frontier-repro/releases/tag/v1.1.0). Every number below re-derives from that release, including the 2026-08-13 corrections (`python recency.py`) and the 2026-09-22 correction to the reviewer-side labeling limit (`python monitor_label.py`). Earlier drafts were pinned at `v1.0.0` and, before that, `d4355b5`, which does not contain the recency batches.
+*Single author, independent. Batch IDs and result JSONs are at the end. Code and raw completions: [github.com/BentleyMoon/frontier-repro](https://github.com/BentleyMoon/frontier-repro), pinned at release [`v1.1.0`](https://github.com/BentleyMoon/frontier-repro/releases/tag/v1.1.0). Every number below re-derives from that release, including the 2026-08-13 corrections (`python recency.py`) and the 2026-09-22 correction to the reviewer-side labeling limit (`python monitor_label.py`). Earlier drafts were pinned at `v1.0.0` and, before that, `869a220`, which does not contain the recency batches.
 Cite as doi:[10.5281/zenodo.22904020](https://doi.org/10.5281/zenodo.22904020) (v1.1.0; all versions: [10.5281/zenodo.22805797](https://doi.org/10.5281/zenodo.22805797)). `reproduce.py` needs no API key and no network. I wrote this to be falsified. If I am wrong, I want to know.*
 
 ## The short version
@@ -24,7 +23,7 @@ Here are Claude Opus 4.8, Sonnet 5 and Haiku 4.5 against an identical, blatant p
 | Sonnet 5 | **0.80** | 1.00 | detects and complies anyway |
 
 Sonnet 5 flags the injection every single time it is asked to audit it, then obeys it on 64 of 80 tries (0.80) when it
-is not asked, when the injection is the last text in the prompt (0 of 80 with 200 characters of neutral text after it). Awareness is not protection. Capability does not buy robustness in general. Opus 4.8 really is robust, and
+is not asked, when the injection is the last text in the prompt (0 of 80 with 200 characters of neutral text after it). Capability does not buy robustness in general. Opus 4.8 really is robust, and
 generalizing from that one model was my mistake.
 
 Following that thread produced the result I care most about. The failure is channel deference rather than gullibility,
@@ -40,8 +39,7 @@ picking the metric after seeing the data. Four of my own hypotheses had been ref
 this, and the count has grown since. I mention it because a program which never kills its own claims is not measuring
 anything, and because this post is itself one of them: an earlier version concluded the opposite.
 
-The most recent one is worth stating plainly, because it is the most expensive mistake this program has made and I found
-it days before posting. A design names its stimulus by string. A validator checked that string against a list that had
+The most recent one is the most expensive mistake this program has made, and I found it days before posting. A design names its stimulus by string. A validator checked that string against a list that had
 never been updated to match the variants actually built, an unmatched name was silently replaced with nothing, and the
 runner reads nothing as the plain control condition. Fourteen local designs ran the control and reported it as the
 treatment. They passed every check I had, because the artifact produced exactly the result the hypothesis predicted, so
@@ -219,14 +217,12 @@ failure that line of work exists to train away, so I am not claiming a new pheno
 within-model dissociation. The same model ignores the identical payload as data, resists a fabricated technique, and
 fails only on the authority costume.
 
-On correlated overseers, 2026 work has measured judge-to-judge error correlation at the frontier directly, including a
-result where nine judges collapse to roughly two effective votes by Kish n_eff. My local shared-basin figure is a
-different quantity, generator-to-auditor rather than judge-to-judge, so it complements that work instead of competing
-with it. The open question is no longer whether panels are correlated. It is what to do about it.
+On correlated overseers, my local shared-basin figure measures generator-to-auditor error correlation, not
+judge-to-judge. The open question is no longer whether panels are correlated. It is what to do about it.
 
 ## What I would defend
 
-**Detection is not resistance**, as an independent observation of the mode Kariyappa and Suh (2026) reported first. I defend
+**Spotting an injection and resisting it can come apart**, as an independent observation of the mode Kariyappa and Suh (2026) reported first. I defend
 the measurement, not priority. The most capable model in a family can identify a manipulation perfectly and comply
 with it anyway. Evaluations that measure whether a model *can recognize* an attack, which is the shape most red-team
 suites take, score Sonnet 5 as safe here. It obeyed 64 of 80 times when the injection was the last text in the
@@ -256,7 +252,7 @@ frontier model to the others, including inside a single vendor. I did, and it wa
   attack templates across three models from one vendor. Read the uncertainty at the task and template level. A
   request-level interval would be badly overconfident.
 - **The defense arm's 0.00 is a floor, and here is how big.** With zero compliance events in 14 independent trials, the
-  exact one-sided 95% upper bound on the underlying compliance rate is about 19.3%. The honest sentence is "no
+  exact one-sided 95% upper bound on the underlying compliance rate is about 19.3%. The accurate sentence is "no
   compliance observed at n = 14, and rates up to roughly 19% remain compatible with the data", not "eliminated". I want
   it replicated at much higher n before anyone ships it as a guarantee.
 - **The defense was tested on the actor only.** Nothing in these batches tests labeling the text a reviewing model

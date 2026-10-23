@@ -1,8 +1,8 @@
-# Detection is not resistance: frontier prompt-injection receipts
+# Prompt-injection detection and obedience in three Claude models: data and re-derivation
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22805797.svg)](https://doi.org/10.5281/zenodo.22805797)
 
-Reproducible data and code behind the post *"Detection is not resistance."* The frontier results
+Reproducible data and code behind the post of the same name ([POST.md](POST.md)). The frontier results
 re-derive from raw model completions, and the open-weight oversight results from per-item monitor
 verdicts. None of it needs an API key, a network connection or a third-party package.
 
@@ -192,8 +192,8 @@ Machine-readable metadata is in [`CITATION.cff`](CITATION.cff). Release v1.1.0 i
 [10.5281/zenodo.22904020](https://doi.org/10.5281/zenodo.22904020). The all-versions DOI,
 [10.5281/zenodo.22805797](https://doi.org/10.5281/zenodo.22805797), always resolves to the latest release.
 
-    Moon, Bentley (ORCID 0009-0003-0053-1661). "Detection is not resistance:
-    frontier prompt-injection receipts." https://github.com/BentleyMoon/frontier-repro
+    Moon, Bentley (ORCID 0009-0003-0053-1661). "Prompt-injection detection and obedience in
+    three Claude models: data and re-derivation." https://github.com/BentleyMoon/frontier-repro
     Release v1.1.0, doi:10.5281/zenodo.22904020 (all versions: 10.5281/zenodo.22805797)
 
 ## Contact and corrections
