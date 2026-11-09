@@ -31,7 +31,7 @@ the channel the payload claims to come from, and a block-labeling defense brough
 0 of 14 tasks.
 
 That defense figure rests on n=14 here. It has since replicated off-vendor on gemma4:31b at n=200
-(design `inj_gemma31_ml`, 6 August 2026, exploratory tier; not in this repository), where obedience fell
+(design `inj_gemma31_ml`, 6 August 2026, exploratory tier; not in this repository and not re-derivable from it), where obedience fell
 from 0.99 to 0.00 and held against an attacker who was explicitly told the labeling was in place.
 
 It also has a limit these batches could not see. Applying the same labeling to a model that is
@@ -127,7 +127,7 @@ are in `data/` for anyone who wants to check that layer too.
 - **Small n**: 20 tasks (legibility), 14 (authority). The authority result's CI excludes zero (so the
   POSITIVE stands), but the run is below the lab's power bar: the smallest effect it could detect is 0.128.
 - **The defense's 0.00 is a floor.** "No compliance observed at n=14", not "eliminated". Replicated
-  since at n=200 on an open-weight 31B model (0.99 → 0.00), which raises confidence in the direction
+  since at n=200 on an open-weight 31B model (0.99 → 0.00; not re-derivable from this repository), which raises confidence in the direction
   without making this batch larger than it is.
 - **The frontier batches test the defense on the ACTOR only.** Labeling the text a *reviewing* model
   reads was tested separately, on open-weight monitors, and there it harms the reviewer (see "The

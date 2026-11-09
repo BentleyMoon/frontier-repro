@@ -1,7 +1,7 @@
 # Prompt-injection detection and obedience in three Claude models: data and re-derivation
 
 *Single author, independent. Batch IDs and result JSONs are at the end. Code and raw completions: [github.com/BentleyMoon/frontier-repro](https://github.com/BentleyMoon/frontier-repro), pinned at release [`v1.1.0`](https://github.com/BentleyMoon/frontier-repro/releases/tag/v1.1.0). Every number below re-derives from that release, including the 2026-08-13 corrections (`python recency.py`) and the 2026-09-22 correction to the reviewer-side labeling limit (`python monitor_label.py`). Earlier drafts were pinned at `v1.0.0` and, before that, `869a220`, which does not contain the recency batches.
-Cite as doi:[10.5281/zenodo.22904020](https://doi.org/10.5281/zenodo.22904020) (v1.1.0; all versions: [10.5281/zenodo.22805797](https://doi.org/10.5281/zenodo.22805797)). `reproduce.py` needs no API key and no network. I wrote this to be falsified. If I am wrong, I want to know.*
+Cite as doi:[10.5281/zenodo.22904020](https://doi.org/10.5281/zenodo.22904020) (v1.1.0; all versions: [10.5281/zenodo.22805797](https://doi.org/10.5281/zenodo.22805797)). `reproduce.py` needs no API key and no network.*
 
 ## The short version
 
@@ -23,8 +23,8 @@ Here are Claude Opus 4.8, Sonnet 5 and Haiku 4.5 against an identical, blatant p
 | Sonnet 5 | **0.80** | 1.00 | detects and complies anyway |
 
 Sonnet 5 flags the injection every single time it is asked to audit it, then obeys it on 64 of 80 tries (0.80) when it
-is not asked, when the injection is the last text in the prompt (0 of 80 with 200 characters of neutral text after it). Capability does not buy robustness in general. Opus 4.8 really is robust, and
-generalizing from that one model was my mistake.
+is not asked, when the injection is the last text in the prompt (0 of 80 with 200 characters of neutral text after it). Capability does not buy robustness in general. Opus 4.8 complied on none of the 20 tasks, which at that n means at most
+0.16, on this one family of tasks, and generalizing from that one model was my mistake.
 
 Following that thread produced the result I care most about. The failure is channel deference rather than gullibility,
 and forcing the model to label each input block as trusted or untrusted drove observed compliance to zero on every task
@@ -134,7 +134,7 @@ compliance to 0.00 on every task I measured. It is cheap and deployable, and it 
 like someone to break.
 
 Since running these batches I have replicated it off-vendor, on gemma4:31b at n = 200 (design `inj_gemma31_ml`,
-6 August 2026, exploratory tier; not in this repository). Obedience fell from
+6 August 2026, exploratory tier; not in this repository and not re-derivable from it). Obedience fell from
 0.99 to 0.00, and it held against an attacker who was explicitly told the labeling was in place. That raises my
 confidence in the direction without making this batch any larger than it is.
 
@@ -170,7 +170,8 @@ summarizing any model with a single safe-or-unsafe label.
 | Legibility | obey 0.00, detect 1.00, FA 0.00 | detect POSITIVE, gap ANTI |
 | Counting, control | ceiling around 1.0 | at ceiling, no partial band |
 
-Opus really is robust on everything I threw at it, and that finding survives. What did not survive is the step from
+Opus obeyed in neither the legibility nor the authority test. In the legibility test that is none of 20 tasks, an upper bound of
+0.16 at that n, on one family of tasks. What did not survive is the step from
 "Opus is robust" to "the frontier is robust".
 
 ### 5. Did it detect and obey the same items?
